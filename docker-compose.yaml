@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  bot:
+    container_name: poker_bot
+    build: .
+  db:
+    container_name: db
+    ports:
+      - "6101:6101"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=maintainer
+    image: postgres:14.5
+    command: 
+      - "postgres"
+      - "-c"
+      - "port=6101"

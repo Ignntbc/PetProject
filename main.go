@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
+	// "encoding/json"
 	"fmt"
-	"io"
+	// "io"
 	"log"
-	"net/http"
+	// "net/http"
 	"os"
 
 	"github.com/joho/godotenv"
@@ -25,23 +25,23 @@ func contains(slice []string, item string) bool {
 	return false
 }
 
-func getCards(deckId string, countCrds string, mode string) ([]string, error) {
-	result, err := makeRequest("https://deckofcardsapi.com/api/deck/" + deckId + "/draw/?count=" + countCrds)
-	if err != nil {
-		log.Fatal(err)
-		return nil, err
-	}
-	var list = make([]string, 0)
-	result_cards := result["cards"] //.(map[string]interface{})["code"]
-	for i := range result_cards.([]interface{}) {
-		fmt.Println("i:", i)
-		playerCard := result_cards.([]interface{})[i].(map[string]interface{})[mode].(string)
-		list = append(list, playerCard)
-	}
-	fmt.Println("list: ", list)
-	return list, nil
+// func getCards(deckId string, countCrds string, mode string) ([]string, error) {
+// 	result, err := makeRequest("https://deckofcardsapi.com/api/deck/" + deckId + "/draw/?count=" + countCrds)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 		return nil, err
+// 	}
+// 	var list = make([]string, 0)
+// 	result_cards := result["cards"] //.(map[string]interface{})["code"]
+// 	for i := range result_cards.([]interface{}) {
+// 		fmt.Println("i:", i)
+// 		playerCard := result_cards.([]interface{})[i].(map[string]interface{})[mode].(string)
+// 		list = append(list, playerCard)
+// 	}
+// 	fmt.Println("list: ", list)
+// 	return list, nil
 
-}
+// }
 
 func errorHandler(err error) {
 	if err != nil {
@@ -49,32 +49,32 @@ func errorHandler(err error) {
 	}
 }
 
-func makeRequest(url string) (map[string]interface{}, error) {
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("Ошибка при создании запроса: %v", err)
-	}
+// func makeRequest(url string) (map[string]interface{}, error) {
+// 	req, err := http.NewRequest("GET", url, nil)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Ошибка при создании запроса: %v", err)
+// 	}
 
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("Ошибка при выполнении запроса: %v", err)
-	}
-	defer resp.Body.Close()
+// 	client := &http.Client{}
+// 	resp, err := client.Do(req)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Ошибка при выполнении запроса: %v", err)
+// 	}
+// 	defer resp.Body.Close()
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return nil, fmt.Errorf("Ошибка при чтении ответа: %v", err)
-	}
+// 	body, err := io.ReadAll(resp.Body)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Ошибка при чтении ответа: %v", err)
+// 	}
 
-	var result map[string]interface{}
-	err = json.Unmarshal([]byte(body), &result)
-	if err != nil {
-		return nil, fmt.Errorf("Ошибка при распаковке JSON: %v", err)
-	}
+// 	var result map[string]interface{}
+// 	err = json.Unmarshal([]byte(body), &result)
+// 	if err != nil {
+// 		return nil, fmt.Errorf("Ошибка при распаковке JSON: %v", err)
+// 	}
 
-	return result, nil
-}
+// 	return result, nil
+// }
 
 func connectToDatabase() (*sql.DB, error) {
 	err := godotenv.Load(".env")
@@ -147,18 +147,22 @@ func SqlSelectRequest(query string) (string, error) {
 // }
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("6413172953:AAHfd0IANxhHyr0ZegEGBxQTdUrMhXa9Luw")
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("TOKEN"))
 	errorHandler(err)
 	bot.Debug = true
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 
-	var pullPlayers []string
-	var deckId string
+	// var pullPlayers []string
+	// var deckId string
 	// var tableMessageId int
 	typeGroups := []string{"private"}
-	quantityPlayers := 0
+	// quantityPlayers := 0
 	counter := 0
 	updates := bot.GetUpdatesChan(u)
 	for update := range updates {
