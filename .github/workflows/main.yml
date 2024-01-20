@@ -1,0 +1,33 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push container
+        run: |
+          docker build -t project-bot .
+          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+          docker tag petproject-bot igntbc/petproject-bot:latest
+          docker igntbc/petproject-bot:latest
+
+      - name: SSH into remote server
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.REMOTE_SERVER_HOST }}
+          username: ${{ secrets.REMOTE_SERVER_USERNAME }}
+          key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
+          script: |
+            docker stop petproject-bot || true
+            docker rm petproject-bot || true
+            docker pull igntbc/petproject-bot:latest
+            docker run -d --name petproject-bot -p 80:80 igntbc/petproject-bot:latest
