@@ -29,5 +29,5 @@ jobs:
           script: |
             docker stop petproject-bot || true
             docker rm petproject-bot || true
-            docker pull igntbc/petproject-bot:latest
-            docker run -d --name petproject-bot -p 80:80 igntbc/petproject-bot:latest
+            docker pull igntbc/petproject-bot
+            docker run -d --name petproject-bot -p 80:80 igntbc/petproject-bot
