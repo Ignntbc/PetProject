@@ -15,7 +15,7 @@ jobs:
 
       - name: Build and push container
         run: |
-          docker build -t project-bot .
+          docker build -t petproject-bot .
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
           docker tag petproject-bot igntbc/petproject-bot
           docker igntbc/petproject-bot
