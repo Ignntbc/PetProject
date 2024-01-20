@@ -27,7 +27,7 @@ jobs:
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
           key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
           script: |
-            docker stop petproject-bot || true
-            docker rm petproject-bot || true
+            # docker stop petproject-bot || true
+            # docker rm petproject-bot || true
             docker pull igntbc/petproject-bot
             docker run -d --name petproject-bot -p 80:80 igntbc/petproject-bot
