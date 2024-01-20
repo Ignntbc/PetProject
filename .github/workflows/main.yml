@@ -24,7 +24,7 @@ jobs:
         uses: appleboy/ssh-action@v0.1.5
         with:
           host: ${{ secrets.REMOTE_SERVER_HOST }}
-          username: ${{ secrets.REMOTE_SERVER_USERNAME }} 
+          username: ${{ secrets.REMOTE_SERVER_USERNAME }}
           key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
           script: |
             docker stop petproject-bot || true
