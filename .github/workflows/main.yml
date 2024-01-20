@@ -21,7 +21,7 @@ jobs:
           docker push igntbc/petproject-bot
 
       - name: SSH into remote server
-        uses: appleboy/ssh-action@v0.1.5
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_SERVER_HOST }}
           username: ${{ secrets.REMOTE_SERVER_USERNAME }}
