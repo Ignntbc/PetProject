@@ -29,6 +29,7 @@ jobs:
           # key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            screen -x PetProject
             cd PetProject
             docker-compose down
             cd ..
@@ -38,4 +39,5 @@ jobs:
             docker-compose build
             docker-compose up
             goose -dir migrations up
+            screen -d
             
