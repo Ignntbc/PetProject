@@ -37,4 +37,5 @@ jobs:
             cd PetProject
             docker-compose build
             docker-compose up
+            goose -dir migrations up
             
