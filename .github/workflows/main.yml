@@ -36,4 +36,5 @@ jobs:
             git clone git@github.com:Ignntbc/PetProject.git
             cd PetProject
             docker-compose build
+            docker-compose up
             
