@@ -16,3 +16,9 @@ services:
       - "postgres"
       - "-c"
       - "port=6101"
+  goose-migration:
+    container_name: goose-migration
+    build: .
+    command: ["goose", "up"]
+    depends_on:
+      - db
