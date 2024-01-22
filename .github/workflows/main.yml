@@ -13,14 +13,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Build and push container
-        run: |
-          docker build -t petproject-bot .
-          docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
-          docker tag petproject-bot igntbc/petproject-bot
-          docker push igntbc/petproject-bot
+      # - name: Build and push container
+      #   run: |
+      #     docker build -t petproject-bot .
+      #     docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      #     docker tag petproject-bot igntbc/petproject-bot
+      #     docker push igntbc/petproject-bot
 
-      - name: executing remote ssh commands using password
+      - name: Deploy to remote server
         uses: appleboy/ssh-action@v1.0.3 
         with:
           host: ${{ secrets.REMOTE_SERVER_HOST }}
@@ -29,6 +29,7 @@ jobs:
           # key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            docker-compose down
-            docker pull igntbc/petproject-bot
-            docker build -t igntbc/petproject-bot .
+            git clone --branch main https://github.com/Ignntbc/PetProject.git /root/petproject
+            cd /root/petproject
+            docker-compose build
+            docker-compose up -d
