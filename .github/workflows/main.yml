@@ -29,7 +29,9 @@ jobs:
           # key: ${{ secrets.REMOTE_SERVER_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            git clone --branch main https://github.com/Ignntbc/PetProject.git /root/petproject
-            cd /root/petproject
+            docker-compose down
+            rm -rf PetProject
+            git clone git@github.com:Ignntbc/PetProject.git
+            cd PetProject
             docker-compose build
-            docker-compose up -d
+            
