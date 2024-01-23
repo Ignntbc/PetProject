@@ -37,6 +37,7 @@ jobs:
             cd PetProject
             docker-compose build
             docker-compose up -d
+            sleep 10
             goose -dir migrations postgres "postgresql://maintainer:postgres@185.233.186.104:6101/postgres?sslmode=disable" up
 
             
