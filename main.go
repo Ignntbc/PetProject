@@ -183,12 +183,14 @@ func main() {
 			errorHandler(err)
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, rooms)
 			bot.Send(msg)
-		} else if update.Message.Text == "/close room" && contains(typeGroups, update.Message.Chat.Type) {
+		} else if update.Message.Text == "/close_room" && contains(typeGroups, update.Message.Chat.Type) {
 			err := SqlInsertRequest("DELETE FROM rooms WHERE player_id = " + fmt.Sprint(update.Message.From.ID))
 			errorHandler(err)
 			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "You have closed the room")
 			bot.Send(msg)
-		}
+		} //else if update.Message.Text == "/start" && contains(typeGroups, update.Message.Chat.Type) {
+
+		// }
 		// if update.Message.Text == "/join" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers < 3 {
 		// 	fmt.Println("updateMessageFrom: ", update.Message.From.UserName)
 		// 	pullPlayers = append(pullPlayers, update.Message.From.UserName)
