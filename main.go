@@ -168,58 +168,70 @@ func main() {
 	for update := range updates {
 		fmt.Println(&update.Message)
 		if update.Message.Text == "/createroom" && contains(typeGroups, update.Message.Chat.Type) {
-			if counter > 1 {
+			if counter >= 1 {
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Sorry, you can't create more than one room")
 				bot.Send(msg)
 			} else {
 				counter++
+				err := SqlInsertRequest("INSERT into rooms (id, player_id, player_name, is_creator) VALUES (DEFAULT, " + fmt.Sprint(update.Message.From.ID) + ", '" + update.Message.From.FirstName + "', true)")
+				errorHandler(err)
 				msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello, "+update.Message.From.FirstName+"!"+" You have created the room ♠️♥️♣️♦️")
 				bot.Send(msg)
 			}
-
-			// if update.Message.Text == "/join" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers < 3 {
-			// 	fmt.Println("updateMessageFrom: ", update.Message.From.UserName)
-			// 	pullPlayers = append(pullPlayers, update.Message.From.UserName)
-			// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello, "+update.Message.From.FirstName+"!"+" You have joined the game ♠️♥️♣️♦️")
-			// 	bot.Send(msg)
-			// 	quantityPlayers++
-			// } else if update.Message.Text == "/join" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers == 2 {
-			// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Sorry, the game is full")
-			// 	bot.Send(msg)
-			// } else if update.Message.Text == "/join" && update.Message.Chat.Type == "private" {
-			// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Sorry, you can't join the game from here, please join from the group")
-			// 	bot.Send(msg)
-			// } else if update.Message.Text == "/startgame" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers == 1 {
-			// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "The game has started")
-			// 	bot.Send(msg)
-			// 	result, err := makeRequest("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
-			// 	errorHandler(err)
-			// 	deckId = result["deck_id"].(string)
-			// 	fmt.Println("deck_id: ", deckId)
-			// 	// cardsPlOne, err := getCards(deckId, 2, "code")
-			// 	errorHandler(err)
-			// 	cardsFlop, err := getCards(deckId, "3", "image")
-			// 	errorHandler(err)
-
-			// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "		♠️♥️♣️♦️    THE TABLE    ♠️♥️♣️♦️")
-			// 	bot.Send(msg)
-			// 	mediaList := []interface{}{}
-			// 	for i := range cardsFlop {
-			// 		photoURL := cardsFlop[i]
-			// 		media := tgbotapi.NewInputMediaPhoto(tgbotapi.FileURL(photoURL))
-			// 		mediaList = append(mediaList, media)
-			// 	}
-			// 	bot.Send(tgbotapi.NewMediaGroup(update.Message.Chat.ID, []interface{}{mediaList[0], mediaList[1], mediaList[2]}))
-			// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "🪙 COINS - <b>35</b>")
-			// 	// coinsMsg, err := bot.Send(msg)
-
-			// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "		♠️♥️♣️♦️    THE TABLE    ♠️♥️♣️♦️")
-			// 	bot.Send(msg)
-
-			//  } //else if update.Message.Text == "/start 4nJQBaU0sz" { // парамет после имени бота в телеге start=4nJQBaU0sz
-			// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Приглашение отработало")
-			// 	bot.Send(msg)
-			// }
+		} else if update.Message.Text == "/rooms" && contains(typeGroups, update.Message.Chat.Type) {
+			rooms, err := SqlSelectRequest("SELECT player_name FROM rooms")
+			errorHandler(err)
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, rooms)
+			bot.Send(msg)
+		} else if update.Message.Text == "/close room" && contains(typeGroups, update.Message.Chat.Type) {
+			err := SqlInsertRequest("DELETE FROM rooms WHERE player_id = " + fmt.Sprint(update.Message.From.ID))
+			errorHandler(err)
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "You have closed the room")
+			bot.Send(msg)
 		}
+		// if update.Message.Text == "/join" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers < 3 {
+		// 	fmt.Println("updateMessageFrom: ", update.Message.From.UserName)
+		// 	pullPlayers = append(pullPlayers, update.Message.From.UserName)
+		// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Hello, "+update.Message.From.FirstName+"!"+" You have joined the game ♠️♥️♣️♦️")
+		// 	bot.Send(msg)
+		// 	quantityPlayers++
+		// } else if update.Message.Text == "/join" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers == 2 {
+		// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Sorry, the game is full")
+		// 	bot.Send(msg)
+		// } else if update.Message.Text == "/join" && update.Message.Chat.Type == "private" {
+		// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Sorry, you can't join the game from here, please join from the group")
+		// 	bot.Send(msg)
+		// } else if update.Message.Text == "/startgame" && contains(typeGroups, update.Message.Chat.Type) && quantityPlayers == 1 {
+		// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "The game has started")
+		// 	bot.Send(msg)
+		// 	result, err := makeRequest("https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1")
+		// 	errorHandler(err)
+		// 	deckId = result["deck_id"].(string)
+		// 	fmt.Println("deck_id: ", deckId)
+		// 	// cardsPlOne, err := getCards(deckId, 2, "code")
+		// 	errorHandler(err)
+		// 	cardsFlop, err := getCards(deckId, "3", "image")
+		// 	errorHandler(err)
+
+		// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "		♠️♥️♣️♦️    THE TABLE    ♠️♥️♣️♦️")
+		// 	bot.Send(msg)
+		// 	mediaList := []interface{}{}
+		// 	for i := range cardsFlop {
+		// 		photoURL := cardsFlop[i]
+		// 		media := tgbotapi.NewInputMediaPhoto(tgbotapi.FileURL(photoURL))
+		// 		mediaList = append(mediaList, media)
+		// 	}
+		// 	bot.Send(tgbotapi.NewMediaGroup(update.Message.Chat.ID, []interface{}{mediaList[0], mediaList[1], mediaList[2]}))
+		// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "🪙 COINS - <b>35</b>")
+		// 	// coinsMsg, err := bot.Send(msg)
+
+		// 	msg = tgbotapi.NewMessage(update.Message.Chat.ID, "		♠️♥️♣️♦️    THE TABLE    ♠️♥️♣️♦️")
+		// 	bot.Send(msg)
+
+		//  } //else if update.Message.Text == "/start 4nJQBaU0sz" { // парамет после имени бота в телеге start=4nJQBaU0sz
+		// 	msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Приглашение отработало")
+		// 	bot.Send(msg)
+		// }
+
 	}
 }
