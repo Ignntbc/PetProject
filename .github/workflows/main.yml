@@ -32,7 +32,7 @@ jobs:
             docker-compose build
             docker-compose up -d
             sleep 10
-            type dump_pokerbot.sql |docker exec -i db psql -U maintainer -d postgres -p 6101 
+            # type dump_pokerbot.sql |docker exec -i db psql -U maintainer -d postgres -p 6101 
             goose -dir migrations postgres "postgresql://maintainer:postgres@185.233.186.104:6101/postgres?sslmode=disable" up
 
             

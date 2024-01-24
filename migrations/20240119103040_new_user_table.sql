@@ -9,5 +9,4 @@ CREATE TABLE IF NOT EXISTS rooms (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS rooms;
 -- +goose StatementEnd

@@ -8,5 +8,4 @@ CREATE TABLE IF NOT EXISTS test (
 
 -- +goose Down
 -- +goose StatementBegin
-DROP TABLE IF EXISTS test;
 -- +goose StatementEnd
